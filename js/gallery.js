@@ -121,7 +121,7 @@ function genFullPic(cookie, e) {
     var downloadingImage = new Image();
     downloadingImage.onload = function() {
         // Иначе слишком быстро загружается
-        setTimeout(function () {}, 3000);
+        setTimeout(function () {}, 5000);
         bigPic.src = this.src;
     };
     downloadingImage.src = fullPic;
