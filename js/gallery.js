@@ -77,8 +77,8 @@ function setVW(vw, direction, elemID) {
 
 function domReady() {
     console.log("Dom ready");
-    setVH(30, "Top", "gallery-main");
-    setVH(20, "Bottom", "gallery-main");
+    //setVH(30, "Top", "gallery-main");
+    //setVH(20, "Bottom", "gallery-main");
 
     window.addEventListener("keyup", kp);
 
@@ -112,11 +112,10 @@ function genFullPic(cookie, e) {
     bigPicWrapper.setAttribute('class', 'big-pic');
     bigPicWrapper.setAttribute('id', 'big-pic');
     var bigPic = document.createElement('img');
-    bigPic.setAttribute('class', 'pure-img');
+    //bigPic.setAttribute('class', 'pure-img');
     bigPic.setAttribute('onclick', 'closeFullPic(this)');
     bigPic.setAttribute('alt', 'bigpic');
     bigPic.setAttribute('src', 'img/placeholder.png');
-    //bigPic.setAttribute('src', picSrc);
     bigPicWrapper.appendChild(bigPic);
     var downloadingImage = new Image();
     downloadingImage.onload = function() {
@@ -125,10 +124,10 @@ function genFullPic(cookie, e) {
         setTimeout(function () {bigPic.src = that.src;}, 1000);
     };
     downloadingImage.src = fullPic;
-    // Добавляем большую картинку
-    document.getElementById("main").appendChild(bigPicWrapper);
-    // Добавляем за ней ширму
-    document.getElementById("blanket").style.display = "block";
+    // Добавляем большую картинку на одеяло
+    document.getElementById("blanket").appendChild(bigPicWrapper);
+    // Добавляем саму ширму
+    document.getElementById("blanket").style.display = "table";
     // Ставим флаг
     isBigPicOpened = true;
     // Запоминаем, что открыто
@@ -150,7 +149,7 @@ function exitBigPic(e) {
     // Скрываем ширму
     var bigPicWrapper = document.getElementById('big-pic');
     document.getElementById("blanket").style.display = "none";
-    document.getElementById("main").removeChild(bigPicWrapper);
+    document.getElementById("blanket").removeChild(bigPicWrapper);
 }
 
 function exitHelp() {

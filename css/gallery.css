@@ -1,3 +1,8 @@
+body
+{
+    text-align: center;
+}
+
 .arrow-wrap
 {
     margin: 10%;
@@ -10,11 +15,21 @@ main > .pure-g > .pure-u-1 > .arrow-wrap
     cursor: pointer;
 }
 
+.l-box
+{
+    padding: 1em;
+}
+
+.pure-g > div[class *="pure-u"] > .l-box:hover > img
+{
+    opacity: 0.8;
+}
+
 .blanket
 {
-    background-color: #000;
-    opacity: 0.8;
-    position: absolute;
+    background-color: rgba(0, 0, 0, .5);
+    font-size: 0;
+    position: fixed;
     z-index: 9001;
     top: 0;
     left: 0;
@@ -25,13 +40,15 @@ main > .pure-g > .pure-u-1 > .arrow-wrap
 
 .big-pic
 {
-    position:absolute;
-    z-index: 9002;
-    top: 0;
-    left: 0;
-    margin-left: 25%;
-    margin-top: 5%;
-    max-width: 50vw;
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
+}
+
+.big-pic > img
+{
+    max-width: 100%;
+    max-height: 100%;
 }
 
 .info
