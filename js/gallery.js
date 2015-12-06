@@ -1,122 +1,81 @@
 //document.addEventListener('DOMContentLoaded', domReady, false);
-window.addEventListener("resize", onResize);
 
 // Мониторим, открыта ли большая картинка сейчас
 var isBigPicOpened = false;
 var isHelpOpened = false;
 var currentModuleScreen = null;
-
-// возвращает cookie с именем name, если есть, если нет, то undefined
-function getCookie(name) {
-    var matches = document.cookie.match(new RegExp(
-        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
-}
-
-function setCookie(name, value, options) {
-    options = options || {};
-
-    var expires = options.expires;
-
-    if (typeof expires == "number" && expires) {
-        var d = new Date();
-        d.setTime(d.getTime() + expires * 1000);
-        expires = options.expires = d;
-    }
-    if (expires && expires.toUTCString) {
-        options.expires = expires.toUTCString();
-    }
-
-    value = encodeURIComponent(value);
-
-    var updatedCookie = name + "=" + value;
-
-    for (var propName in options) {
-        updatedCookie += "; " + propName;
-        var propValue = options[propName];
-        if (propValue !== true) {
-            updatedCookie += "=" + propValue;
-        }
-    }
-
-    document.cookie = updatedCookie;
-}
-
-function deleteCookie(name) {
-    setCookie(name, "", {
-        expires: -1
-    })
-}
-
-function getStyles(elem) {
-    // Для IE и для других
-    return elem.currentStyle || window.getComputedStyle(elem);
-}
-
-//TODO Объединить следующие 2 функции
-function setVH(vh, direction, elemID) {
-    // В IE8 нет vh и vw
-    // Эмуляция единиц vh
-    // direction = Top || Bottom
-    var h = window.innerHeight;
-    var elem = document.getElementById(elemID);
-    // Говорят и такое в IE не работать может
-    elem.style["margin" + direction] =  [(h / 100 * vh).toString(), "px"].join("");
-}
-
-function setVW(vw, direction, elemID) {
-    // В IE8 нет vh и vw
-    // Эмуляция единиц vh
-    // direction = Top || Bottom
-    var w = window.innerWidth;
-    var elem = document.getElementById(elemID);
-    // Говорят и такое в IE не работать может
-    elem.style["margin" + direction] =  [(w / 100 * vw).toString(), "px"].join("");
-}
+// Список всех картинок
+var pictures = window.pictures;
 
 function domReady() {
     console.log("Dom ready");
     //setVH(30, "Top", "gallery-main");
     //setVH(20, "Bottom", "gallery-main");
 
-    window.addEventListener("keyup", kp);
+    window.addEventListener('keyup', kp);
+    window.addEventListener('hashchange', hashChanged);
+    window.addEventListener("resize", onResize);
 
     // Проверим, есть ли картинка в куках
-    if (getCookie('picSrc') && getCookie('fullPic')) {
-        genFullPic({'picStr': getCookie('picSrc'), 'fullPic': getCookie('fullPic')});
+    if (getCookie('previewPic') && getCookie('fullPic')) {
+        genFullPic({
+            previewPic: getCookie('previewPic'),
+            fullPic: getCookie('fullPic')
+        });
     }
 }
 
-function onResize() {
-    var w = window.innerWidth;
-    var h = window.innerHeight;
-    console.log(w, h);
-    setVH(30, "Top", "gallery-main");
-    setVH(20, "Bottom", "gallery-main");
+// elem - объект со свойствами
+// previewPic
+// fullPic
+function setBackground(elem) {
 }
 
-function genFullPic(cookie, e) {
-    //console.log(e.parentNode.id);
-    // Или из куки или из html нас вызвали
-    if (cookie) {
-        var picSrc = cookie['picSrc'];
-        var fullPic = cookie['fullPic'];
-    } else {
-        var picSrc = e.src;
-        var fullPic = e.getAttribute('data-full-pic');
+function hashChanged() {
+    console.log('Hash changed');
+    var hash = window.location.hash.substring(1);
+    console.log(hash);
+    if (isBigPicOpened) {
+        exitModuleScreen();
     }
-    console.log(cookie, e);
-    console.log(picSrc, fullPic);
-    var bigPicWrapper = document.createElement('div');
-    bigPicWrapper.setAttribute('class', 'big-pic');
-    bigPicWrapper.setAttribute('id', 'big-pic');
+    if (pictures[hash]) {
+        genFullPic(pictures[hash]);
+    }
+}
+
+// elem - объект со свойствами
+// previewPic
+// fullPic
+function genFullPic(elem) {
+    var previewPic = elem['previewPic'];
+    var fullPic = elem['fullPic'];
+    console.log(elem);
+    var popupScreen = document.createElement('div');
+    popupScreen.setAttribute('class', 'popup-screen');
+    popupScreen.setAttribute('id', 'popup-screen');
+    var popupImg = document.createElement('div');
+    popupImg.setAttribute('class', 'popup-image');
+    popupImg.setAttribute('id', 'popup-image');
+    var popupComments = document.createElement('div');
+    popupComments.setAttribute('class', 'popup-comments');
+    popupComments.setAttribute('id', 'popup-comments');
     var bigPic = document.createElement('img');
-    //bigPic.setAttribute('class', 'pure-img');
-    bigPic.setAttribute('onclick', 'closeFullPic(this)');
+    bigPic.setAttribute('onclick', 'clearBigPic()');
+    bigPic.setAttribute('class', 'my-pure-img');
     bigPic.setAttribute('alt', 'bigpic');
     bigPic.setAttribute('src', 'img/placeholder.png');
-    bigPicWrapper.appendChild(bigPic);
+    popupImg.appendChild(bigPic);
+    popupScreen.appendChild(popupImg);
+    popupScreen.appendChild(popupComments);
+
+    //var bigPicWrapper = document.createElement('div');
+    //bigPicWrapper.setAttribute('class', 'big-pic');
+    //bigPicWrapper.setAttribute('id', 'big-pic');
+    //var bigPic = document.createElement('img');
+    //bigPic.setAttribute('onclick', 'clearBigPic()');
+    //bigPic.setAttribute('alt', 'bigpic');
+    //bigPic.setAttribute('src', 'img/placeholder.png');
+    //bigPicWrapper.appendChild(bigPic);
     var downloadingImage = new Image();
     downloadingImage.onload = function() {
         // Иначе слишком быстро загружается
@@ -124,14 +83,14 @@ function genFullPic(cookie, e) {
         setTimeout(function () {bigPic.src = that.src;}, 1000);
     };
     downloadingImage.src = fullPic;
-    // Добавляем большую картинку на одеяло
-    document.getElementById("blanket").appendChild(bigPicWrapper);
+    // Добавляем большую картинку на ширму
+    document.getElementById("main").appendChild(popupScreen);
     // Добавляем саму ширму
     document.getElementById("blanket").style.display = "table";
     // Ставим флаг
     isBigPicOpened = true;
     // Запоминаем, что открыто
-    setCookie('picSrc', picSrc, {'expires': 99999});
+    setCookie('previewPic', previewPic, {'expires': 99999});
     setCookie('fullPic', fullPic, {'expires': 99999});
 }
 
@@ -144,49 +103,81 @@ function genInfo() {
     isHelpOpened = true;
 }
 
+function showNext() {
+    if (isBigPicOpened) {
+        var hash = parseInt(window.location.hash.substring(1), 10);
+        console.log(hash);
+        if (pictures[hash + 1]) {
+            window.location.hash = (hash + 1).toString();
+        }
+    }
+}
+
+function showPrev() {
+    if (isBigPicOpened) {
+        var hash = parseInt(window.location.hash.substring(1), 10);
+        console.log(hash);
+        if (pictures[hash - 1]) {
+            window.location.hash = (hash - 1).toString();
+        }
+    }
+}
+
+function clearBigPic(e) {
+    console.log('clearBigPic');
+    exitBigPic();
+    // Чистим hash
+    window.location.hash = '';
+}
+
 function exitBigPic(e) {
     // Удаляем картинку
     // Скрываем ширму
-    var bigPicWrapper = document.getElementById('big-pic');
+    var popupScreen = document.getElementById('popup-screen');
     document.getElementById("blanket").style.display = "none";
-    document.getElementById("blanket").removeChild(bigPicWrapper);
+    document.getElementById("main").removeChild(popupScreen);
+    // Устанавливаем флаг
+    isBigPicOpened = false;
+    // Чистим cookie
+    if (getCookie('fullPic')) {
+        deleteCookie('fullPic');
+    }
 }
 
 function exitHelp() {
     document.getElementById("blanket").style.display = "none";
     document.getElementById("info").style.display = "none";
+    isHelpOpened = false;
 }
 
 function exitModuleScreen() {
     if (isHelpOpened) {
         exitHelp();
-        isHelpOpened = false;
     }
     if (isBigPicOpened) {
         exitBigPic();
-        isBigPicOpened = false;
-        if (getCookie('picSrc')) {
-            deleteCookie('picSrc');
-        }
     }
 }
 
+// Обрабатываем нажатие на кнопки
 function kp (e) {
     console.log(e);
     var code = e.keyCode || e.which;
     if (code === 27) {
         console.log("escape key-up pressed");
-        if (isBigPicOpened) {
-            exitBigPic(null);
-            isBigPicOpened = false;
-        }
-        if (isHelpOpened) {
-            exitHelp();
-            isHelpOpened = false;
-        }
+        window.location.hash = '';
+        exitModuleScreen();
     }
     if (code === 112) {
         console.log("f1 key-up pressed");
         genInfo();
+    }
+    if (code === 37) {
+        console.log('Left arrow pressed');
+        showPrev();
+    }
+    if (code === 39) {
+        console.log('Right arrow pressed');
+        showNext();
     }
 }
