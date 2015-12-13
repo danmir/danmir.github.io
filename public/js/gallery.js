@@ -17,11 +17,12 @@ function domReady() {
     window.addEventListener("resize", onResize);
 
     // Проверим, есть ли картинка в куках
-    if (getCookie('previewPic') && getCookie('fullPic')) {
-        genFullPic({
-            previewPic: getCookie('previewPic'),
-            fullPic: getCookie('fullPic')
-        });
+    var picNum = getCookie('picNum');
+    if (picNum) {
+        if (pictures[picNum]) {
+            window.location.hash = (picNum).toString();
+            hashChanged();
+        }
     }
 }
 
@@ -41,6 +42,16 @@ function hashChanged() {
     if (pictures[hash]) {
         genFullPic(pictures[hash]);
     }
+}
+
+// Генерируем поле ввода
+// parent - узел, к которому прицепить
+function genCommentArea(parent) {
+    var form = '<div class="pure-g comment-input">';
+    form += '<textarea class="pure-u-2-3" id="comment_field" placeholder="Комментарий"></textarea>';
+    form += '<button type="submit" onclick="sendCommentHandler()" class="pure-button pure-u-1-3 pure-button-primary">Отправить</button>';
+    form += '</div>';
+    parent.innerHTML = form;
 }
 
 // elem - объект со свойствами
@@ -68,14 +79,14 @@ function genFullPic(elem) {
     popupScreen.appendChild(popupImg);
     popupScreen.appendChild(popupComments);
 
-    //var bigPicWrapper = document.createElement('div');
-    //bigPicWrapper.setAttribute('class', 'big-pic');
-    //bigPicWrapper.setAttribute('id', 'big-pic');
-    //var bigPic = document.createElement('img');
-    //bigPic.setAttribute('onclick', 'clearBigPic()');
-    //bigPic.setAttribute('alt', 'bigpic');
-    //bigPic.setAttribute('src', 'img/placeholder.png');
-    //bigPicWrapper.appendChild(bigPic);
+    // Форма для комментариев
+    genCommentArea(popupComments);
+    // Запрос на комментарии
+    var hash = parseInt(window.location.hash.substring(1), 10);
+    var comments = getCommentsForPic(hash);
+    // Отображение комментариев
+    showComments(popupComments, comments);
+
     var downloadingImage = new Image();
     downloadingImage.onload = function() {
         // Иначе слишком быстро загружается
@@ -92,6 +103,90 @@ function genFullPic(elem) {
     // Запоминаем, что открыто
     setCookie('previewPic', previewPic, {'expires': 99999});
     setCookie('fullPic', fullPic, {'expires': 99999});
+    setCookie('picNum', hash, {'expires': 99999});
+}
+
+// Зпрашиваем комментарии у сервера
+// по id картинки
+// Возвращаем 'error' или
+// {id, comment, time, username}
+function getCommentsForPic(picNum) {
+    var xhr = new XMLHttpRequest();
+    var json = JSON.stringify({
+        picNum: picNum
+    });
+    xhr.open('GET', '/comments/' + picNum, false);
+    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+    xhr.send(json);
+    if (xhr.status != 200) {
+        console.log(xhr.status);
+        return 'error';
+    }
+    var parsedComments = JSON.parse(xhr.responseText);
+    console.log(parsedComments);
+    return parsedComments;
+}
+
+// Отправляем комментарий на сервер для заданной картинки
+function sendCommentForPic(picNum, comment) {
+    var xhr = new XMLHttpRequest();
+    var json = JSON.stringify({
+        picId: picNum,
+        comment: comment
+    });
+    xhr.open('POST', '/comments', false);
+    //xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+    xhr.send(json);
+    var jsonResponse = JSON.parse(xhr.responseText);
+    console.log(jsonResponse);
+    if (jsonResponse['status'] && jsonResponse['status'] === 'accepted') {
+        comment = jsonResponse['comment'];
+        var popupList = document.querySelector('#popup-comments');
+        addCommentToPage(popupList, comment);
+    }
+}
+
+function sendCommentHandler() {
+    console.log('Send button clicked');
+    var hash = parseInt(window.location.hash.substring(1), 10);
+    var comment = document.getElementById('comment_field').value;
+    var popupList = document.querySelector('#popup-comments');
+    sendCommentForPic(hash, comment);
+    document.getElementById('comment_field').value = '';
+}
+
+// comment - {time, username, comment}
+function createComment(comment) {
+    var commentDiv = document.createElement('div');
+    commentDiv.setAttribute('class', 'comment-msg');
+    commentDiv.innerHTML += comment.username;
+    commentDiv.innerHTML += " @ (" + comment.time + ") ";
+    commentDiv.innerHTML += comment['comment'];
+    return commentDiv;
+}
+
+// Добавляем комментарий к странице без перезагрузки
+function addCommentToPage(node, comment) {
+    node.appendChild(createComment({comment: comment, time: new Date(), username: 'Я'}));
+}
+
+// Отображаем полученные комментарии
+// node - узел, куда добавлять
+// comments - [] с {id, comment, time, username}
+function showComments(node, comments) {
+    if (comments['error'] === 'not registered') {
+        var bigStr = '<a href="/login">Авторизируйтесь для дальнейших действий</a>';
+        node.innerHTML = bigStr;
+        return;
+    }
+    comments = comments.comments;
+
+    for (var i = 0; i < comments.length; ++i) {
+        var comment = comments[i];
+        node.appendChild(createComment(comment));
+    }
 }
 
 function genInfo() {
@@ -141,6 +236,12 @@ function exitBigPic(e) {
     // Чистим cookie
     if (getCookie('fullPic')) {
         deleteCookie('fullPic');
+    }
+    if (getCookie('previewPic')) {
+        deleteCookie('previewPic');
+    }
+    if (getCookie('picNum')) {
+        deleteCookie('picNum');
     }
 }
 

@@ -1,30 +1,3 @@
-<!doctype html>
-<html lang="ru">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Портфолио">
-
-    <title>Портфолио</title>
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
-    <!--[if lte IE 8]>
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-old-ie-min.css">
-    <![endif]-->
-    <!--[if gt IE 8]><!-->
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
-    <!--<![endif]-->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <!--[if lte IE 8]>
-    <link rel="stylesheet" href="css/layouts/custom-old-ie.css">
-    <![endif]-->
-    <!--[if gt IE 8]><!-->
-    <link rel="stylesheet" href="css/layouts/custom.css">
-    <!--<![endif]-->
-    <link rel="stylesheet" type="text/css" href="css/animate.css">
-</head>
-<body>
-
-
 <div class="header">
     <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
         <a class="pure-menu-heading" href=""></a>
@@ -32,6 +5,7 @@
             <li class="pure-menu-item"><a data-scroll href="#whatIDo" class="pure-menu-link">Чем я занимаюсь</a></li>
             <li class="pure-menu-item"><a data-scroll href="#about" class="pure-menu-link">Обо мне</a></li>
             <li class="pure-menu-item"><a data-scroll href="#links" class="pure-menu-link">Ссылки</a></li>
+            <li class="pure-menu-item"><a data-scroll href="/gallery" class="pure-menu-link">Галлерея</a></li>
             <li class="pure-menu-item"><a data-scroll href="#works" class="pure-menu-link">Работы</a></li>
             <li class="pure-menu-item"><a data-scroll href="#contact" class="pure-menu-link">Связаться со мной</a></li>
         </ul>
@@ -132,7 +106,7 @@
             </div>
             <div class="pure-u-1 pure-u-md-1-2 pure-u-lg-6-24">
                 <div class="l-box">
-                    <a class="list-group-item" href="gallery.html"><i class="fa fa-picture-o fa-5x"></i></a>
+                    <a class="list-group-item" href="gallery"><i class="fa fa-picture-o fa-5x"></i></a>
                 </div>
             </div>
         </div>
@@ -174,9 +148,9 @@
     </div>
 
     <div class="footer l-box is-center">
-        Миронов Данил. 2015.
+        <p>Миронов Данил. 2015.</p>
+        <p>Последний hit с этого ip @ {{lastVisit}}</p>
+        <img src="img/statistic.jpg" alt="statistic">
     </div>
 
 </div>
-</body>
-</html>

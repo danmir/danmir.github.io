@@ -1,0 +1,16 @@
+<p>Слишком быстро</p>
+<p>Теперь придется подождать <span id="timer">5</span></p>
+<script>
+    setTimeout(function(){
+        window.location.reload(1);
+    }, 5000);
+    var timerCount = document.getElementById('timer');
+    var initCount = 5;
+    setInterval(function () {
+        initCount -= 1;
+        timerCount.innerHTML = (initCount).toString();
+    }, 1000);
+    setTimeout(function(){
+        window.location.reload(1);
+    }, 5000);
+</script>

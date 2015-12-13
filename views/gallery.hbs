@@ -1,0 +1,94 @@
+<main id="main">
+    <div class="pure-g l-box-lrg" id="gallery-main">
+        <div class="pure-u-1 pure-u-lg-1-4">
+            <div class="l-box">
+                <a href="#0">
+                    <img class="pure-img" alt="pic1" src="img/cat1.jpg">
+                </a>
+            </div>
+        </div>
+        <div class="pure-u-1 pure-u-lg-1-4">
+            <div class="l-box">
+                <a href="#1">
+                    <img class="pure-img" alt="pic2" src="img/cat2.jpg">
+                </a>
+            </div>
+        </div>
+        <div class="pure-u-1 pure-u-lg-1-4">
+            <div class="l-box">
+                <a href="#2">
+                    <img class="pure-img" alt="pic3" src="img/cat3.jpg">
+                </a>
+            </div>
+        </div>
+        <div class="pure-u-1 pure-u-lg-1-4">
+            <div class="l-box">
+                <a href="#3">
+                    <img class="pure-img" alt="pic4" src="img/cat4.jpg">
+                </a>
+            </div>
+        </div>
+        <div class="pure-u-1 pure-u-lg-1-4">
+            <div class="l-box">
+                <a href="#4">
+                    <img class="pure-img" alt="pic5" src="img/cat5.jpg">
+                </a>
+            </div>
+        </div>
+        <div class="pure-u-1 pure-u-lg-1-4">
+            <div class="l-box">
+                <a href="#5">
+                    <img class="pure-img" alt="pic6" src="img/cat6.jpeg">
+                </a>
+            </div>
+        </div>
+        <div class="pure-u-1 pure-u-lg-1-4">
+            <div class="l-box">
+                <a href="#6">
+                    <img class="pure-img" alt="pic7" src="img/cat7.jpg">
+                </a>
+            </div>
+        </div>
+        <div class="pure-u-1 pure-u-lg-1-4">
+            <div class="l-box">
+                <a href="#7">
+                    <img class="pure-img" alt="pic8" src="img/cat8.jpg">
+                </a>
+            </div>
+        </div>
+        <div class="pure-u-1 pure-u-lg-1-4">
+            <div class="l-box">
+                <a href="#8">
+                    <img class="pure-img" alt="pic9" src="img/cat9.jpg">
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="blanket" id="blanket" onclick="clearBigPic()"></div>
+    <div class="info" id="info">
+        <p>
+            Справка по галерее:
+        </p>
+        <ul>
+            <li>Вызов справки F1</li>
+            <li>Выход - esc или по фону жамкнуть</li>
+        </ul>
+    </div>
+</main>
+<img src="img/statistic.jpg" alt="statistic">
+<!--<p><a href="https://yandex.ru/support/metrika/general/glossary.xml">Визитов</a> за сегодня {{visitsToday}}</p>-->
+<!--<p><a href="https://yandex.ru/support/metrika/general/glossary.xml">Визитов</a> в общем {{visitsAll}}</p>-->
+<!--<p><a href="https://yandex.ru/support/metrika/general/glossary.xml#pv2">Просмотров</a> за сегодня {{hitsToday}}</p>-->
+<!--<p><a href="https://yandex.ru/support/metrika/general/glossary.xml#pv2">Просмотров</a> в общем {{hitsAll}}</p>-->
+<p>Последний hit с этого ip @ {{lastVisit}}</p>
+</body>
+<script src="js/pictures.js"></script>
+<script src="js/cookie.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/gallery.js"></script>
+<script>
+    // Используем так, а не
+    // document.addEventListener('DOMContentLoaded', domReady, false);
+    // Из-за поддержки старых IE :(
+    domReady();
+</script>
