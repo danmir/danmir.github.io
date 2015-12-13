@@ -2,10 +2,12 @@ var express = require('express');
 var router = express.Router();
 var allVisits = require('../get_statistic.js');
 var pg = require('pg');
-var conString = "postgres://danmir:@localhost/visits";
+//var conString = "postgres://danmir:@localhost/visits";
+var conString = process.env.DATABASE_URL;
 
 // Определение быстрых обращений к серверу
 router.use(function(req, res, next) {
+    console.log(conString);
     var client = new pg.Client(conString);
     client.connect(function(err) {
         if(err) {

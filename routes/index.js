@@ -29,7 +29,7 @@ router.get('/gallery', function(req, res, next) {
 // Комментарии для картинок
 router.get('/comments/:id', function(req, res, next) {
         var Client = require('pg-native');
-        var conString = "postgres://danmir:@localhost/users";
+        var conString = process.env.DATABASE_URL;;
         var client = new Client();
         if (req.user) {
             console.log('id: ', req.params.id);
@@ -65,7 +65,7 @@ router.get('/comments/:id', function(req, res, next) {
 // Отправка комментария на сервер
 router.use('/comments', function(req, res, next) {
     var Client = require('pg-native');
-    var conString = "postgres://danmir:@localhost/users";
+    var conString = process.env.DATABASE_URL;
     var client = new Client();
     if (req.user) {
         client.connect(conString, function(err) {

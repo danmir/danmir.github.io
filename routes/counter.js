@@ -4,7 +4,7 @@ var router = express.Router();
 // Статистика hits по страницам
 router.get('/', function(req, res, next) {
     var Client = require('pg-native');
-    var conString = "postgres://danmir:@localhost/visits";
+    var conString = process.env.DATABASE_URL;;
     var client = new Client();
     client.connect(conString, function (err) {
         if (err) {
