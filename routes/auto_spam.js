@@ -23,9 +23,15 @@ router.use(function(req, res, next) {
                     if(err) {
                         return console.error('error running query', err);
                     }
+                    // Запишем еще время этого визита
+                    client.query("INSERT INTO visits_time (ip, time) VALUES ($1::text, CURRENT_DATE)", [ip], function(err, result) {
+                        if(err) {
+                            return console.error('error running query', err);
+                        }
+                        next();
+                        client.end();
+                    });
                 });
-                next();
-                client.end();
             } else {
                 //console.log('Старый пользователь');
                 client.query("SELECT id, ip, time, num, (extract(epoch from now()) - time) as delta from visits WHERE ip='" + req.ip + "'", function(err, result) {
