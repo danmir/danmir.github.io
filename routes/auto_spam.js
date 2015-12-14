@@ -16,7 +16,7 @@ router.use(function (req, res, next) {
     } else {
         realIpAddr = req.connection.remoteAddress;
     }
-    query('SELECT ip, time from visits WHERE ip=$1::text', [req.ip], function(err, rows, result) {
+    query('SELECT ip, time from visits WHERE ip=$1::text', [realIpAddr], function(err, rows, result) {
         if(err) {
             return console.error('error running query', err);
         }
