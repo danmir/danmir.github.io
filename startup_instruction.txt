@@ -1,0 +1,25 @@
+CREATE TABLE hits(
+   id  SERIAL PRIMARY KEY,
+   url            TEXT,
+   time            date
+);
+CREATE TABLE visits(
+   id  SERIAL PRIMARY KEY,
+   ip           TEXT,
+   time            double precision,
+   num integer
+);
+CREATE TABLE visits_time(
+   id  SERIAL PRIMARY KEY,
+   ip           TEXT,
+   time date
+);
+CREATE TABLE comments(
+   id  SERIAL PRIMARY KEY,
+   comment text,
+   username text,
+   time time,
+   pic_id integer
+);
+
+// Не забыть поменять в таблице User поле hash - сделать побольше

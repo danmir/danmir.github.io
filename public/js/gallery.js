@@ -145,6 +145,12 @@ function sendCommentForPic(picNum, comment) {
         comment = jsonResponse['comment'];
         var popupList = document.querySelector('#popup-comments');
         addCommentToPage(popupList, comment);
+    } else {
+        if (jsonResponse['status'] && jsonResponse['status'] === 'denied') {
+            if (jsonResponse['msg'] === 'too long') {
+                alert("Слишком длинное сообщение");
+            }
+        }
     }
 }
 

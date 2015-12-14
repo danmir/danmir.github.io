@@ -77,20 +77,30 @@ router.use('/comments', function(req, res, next) {
             console.log('Очищенный комментарий', comment);
             var username = req.user.dataValues.username;
             var picId = req.body.picId;
-            client.query('INSERT INTO comments (comment, username, time, pic_id) VALUES ($1::text, $2::text, NOW(), $3::integer)',
-                [comment, username, picId], function(err, rows) {
-                    if (err) {
-                        console.log(err);
-                    }
-                    res.writeHead(200, {"Content-Type": "application/json"});
-                    var comment = sanitizeHtml(req.body.comment);
-                    var json = JSON.stringify({
-                        status: 'accepted',
-                        comment: comment
-                    });
-                    res.end(json);
-                    client.end();
-            })
+            // Проверим размер комментария
+            if (comment.length > 1000) {
+                console.log('Слишком длинный комментарий');
+                res.writeHead(200, {"Content-Type": "application/json"});
+                var json = JSON.stringify({
+                    status: 'denied',
+                    msg: 'too long'
+                });
+                res.end(json);
+            } else {
+                client.query('INSERT INTO comments (comment, username, time, pic_id) VALUES ($1::text, $2::text, NOW(), $3::integer)',
+                    [comment, username, picId], function(err, rows) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        res.writeHead(200, {"Content-Type": "application/json"});
+                        var json = JSON.stringify({
+                            status: 'accepted',
+                            comment: comment
+                        });
+                        res.end(json);
+                        client.end();
+                    })
+            }
         });
     } else {
         res.writeHead(200, {"Content-Type": "application/json"});
