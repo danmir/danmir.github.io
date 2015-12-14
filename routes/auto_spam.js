@@ -24,7 +24,7 @@ router.use(function(req, res, next) {
                         return console.error('error running query', err);
                     }
                     // Запишем еще время этого визита
-                    client.query("INSERT INTO visits_time (ip, time) VALUES ($1::text, CURRENT_DATE)", [ip], function(err, result) {
+                    client.query("INSERT INTO visits_time (ip, time) VALUES ($1::text, CURRENT_DATE)", [req.ip], function(err, result) {
                         if(err) {
                             return console.error('error running query', err);
                         }
