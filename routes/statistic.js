@@ -61,7 +61,11 @@ router.use(function(req, res, next) {
                                                         if (err) {
                                                             console.log(err);
                                                         }
-                                                        req.app.locals.lastVisit = new Date(rows[0].time);
+                                                        if (rows[0]) {
+                                                            req.app.locals.lastVisit = new Date(rows[0].time);
+                                                        } else {
+                                                            req.app.locals.lastVisit = new Date();
+                                                        }
                                                         next();
                                                         client.end();
                                                     });
