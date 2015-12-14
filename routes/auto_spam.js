@@ -5,21 +5,29 @@ var pg = require('pg');
 //var conString = "postgres://danmir:@localhost/visits";
 var query = require('pg-query');
 query.connectionParameters = process.env.DATABASE_URL;
-var conString = process.env.DATABASE_URL;
+
 
 router.use(function (req, res, next) {
+    // Получаем настоящий адрес, внутри heroku
+    var realIpAddr = req.headers["x-forwarded-for"];
+    if (realIpAddr){
+        var list = realIpAddr.split(",");
+        realIpAddr = list[list.length-1];
+    } else {
+        realIpAddr = req.connection.remoteAddress;
+    }
     query('SELECT ip, time from visits WHERE ip=$1::text', [req.ip], function(err, rows, result) {
         if(err) {
             return console.error('error running query', err);
         }
         // Если новый пользователь, занесем его в таблицу
         if (!result.rowCount) {
-            query('INSERT INTO visits (time, ip, num) VALUES (extract(epoch from now()), $1::text, 1)', [req.ip], function(err, rows, result) {
+            query('INSERT INTO visits (time, ip, num) VALUES (extract(epoch from now()), $1::text, 1)', [realIpAddr], function(err, rows, result) {
                 if(err) {
                     return console.error('error running query', err);
                 }
                 // Запишем еще время этого визита
-                query('INSERT INTO visits_time (ip, time) VALUES ($1::text, CURRENT_DATE)', [req.ip], function(err, rows, result) {
+                query('INSERT INTO visits_time (ip, time) VALUES ($1::text, CURRENT_DATE)', [realIpAddr], function(err, rows, result) {
                     if(err) {
                         return console.error('error running query', err);
                     }
@@ -29,7 +37,7 @@ router.use(function (req, res, next) {
         } else {
            // Иначе это старый пользователь
            // Считаем, сколько прошло с его последнего визита
-            query('SELECT id, ip, time, num, (extract(epoch from now()) - time) as delta from visits WHERE ip=$1::text', [req.ip], function(err, rows, result) {
+            query('SELECT id, ip, time, num, (extract(epoch from now()) - time) as delta from visits WHERE ip=$1::text', [realIpAddr], function(err, rows, result) {
                 if(err) {
                     return console.error('error running query', err);
                 }
