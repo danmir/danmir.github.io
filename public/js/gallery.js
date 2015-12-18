@@ -136,7 +136,8 @@ function genFullPic(elem) {
     bigPic.setAttribute('onclick', 'clearBigPic()');
     bigPic.setAttribute('alt', 'bigpic');
     bigPic.setAttribute('src', 'img/placeholder.png');
-    bigPic.setAttribute('class', 'image');
+    bigPic.setAttribute('class', 'ui image');
+    bigPic.setAttribute('style', 'display: inline-block;');
     var popupComments = document.createElement('div');
     popupComments.setAttribute('class', 'content');
     popupComments.setAttribute('id', 'popup-comments');
@@ -159,9 +160,20 @@ function genFullPic(elem) {
     downloadingImage.onload = function() {
         // Иначе слишком быстро загружается
         var that = this;
-        setTimeout(function () {bigPic.src = that.src;}, 1000);
+        setTimeout(function () {bigPic.src = that.src;}, 1);
     };
     downloadingImage.src = fullPic;
+
+    // Предзагрузка соседних картинок
+    if (pictures[hash - 1]) {
+        var prevImg = new Image();
+        prevImg.src = pictures[hash - 1].fullPic;
+    }
+    if (pictures[hash + 1]) {
+        var nextImg = new Image();
+        nextImg.src = pictures[hash + 1].fullPic;
+    }
+
     // Добавляем большую картинку на ширму
     document.getElementById("main").appendChild(popupScreen);
     // Добавляем саму ширму
