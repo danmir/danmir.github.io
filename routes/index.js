@@ -73,7 +73,10 @@ router.use('/comments', function(req, res, next) {
                 console.log(err);
             }
             console.log('Комментарий на сервере', req.body);
-            var comment = sanitizeHtml(req.body.comment);
+            //var comment = sanitizeHtml(req.body.comment);
+            var comment = sanitizeHtml(req.body.comment, {
+                allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img' ])
+            });
             console.log('Очищенный комментарий', comment);
             var username = req.user.dataValues.username;
             var picId = req.body.picId;
