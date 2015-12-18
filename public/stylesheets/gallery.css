@@ -70,6 +70,7 @@ main > .pure-g > .pure-u-1 > .arrow-wrap
 .popup-comments
 {
     /*height: 300px;*/
+    padding: 5px;
     background-color: #fff;
 }
 

@@ -61,23 +61,45 @@ function genFullPic(elem) {
     var previewPic = elem['previewPic'];
     var fullPic = elem['fullPic'];
     console.log(elem);
+    //var popupScreen = document.createElement('div');
+    //popupScreen.setAttribute('class', 'popup-screen');
+    //popupScreen.setAttribute('id', 'popup-screen');
+    //var popupImg = document.createElement('div');
+    //popupImg.setAttribute('class', 'popup-image');
+    //popupImg.setAttribute('id', 'popup-image');
+    //var popupComments = document.createElement('div');
+    //popupComments.setAttribute('class', 'popup-comments');
+    //popupComments.setAttribute('id', 'popup-comments');
+    //var bigPic = document.createElement('img');
+    //bigPic.setAttribute('onclick', 'clearBigPic()');
+    //bigPic.setAttribute('class', 'my-pure-img');
+    //bigPic.setAttribute('alt', 'bigpic');
+    //bigPic.setAttribute('src', 'img/placeholder.png');
+    //popupImg.appendChild(bigPic);
+    //popupScreen.appendChild(popupImg);
+    //popupScreen.appendChild(popupComments);
+
     var popupScreen = document.createElement('div');
-    popupScreen.setAttribute('class', 'popup-screen');
+    popupScreen.setAttribute('class', 'ui modal visible active scrolling');
     popupScreen.setAttribute('id', 'popup-screen');
+    popupScreen.setAttribute('style', 'top: 20px; text-align: center;');
+    var popupHeader = document.createElement('div');
+    popupHeader.setAttribute('class', 'header');
     var popupImg = document.createElement('div');
-    popupImg.setAttribute('class', 'popup-image');
+    popupImg.setAttribute('class', 'image content');
     popupImg.setAttribute('id', 'popup-image');
-    var popupComments = document.createElement('div');
-    popupComments.setAttribute('class', 'popup-comments');
-    popupComments.setAttribute('id', 'popup-comments');
     var bigPic = document.createElement('img');
     bigPic.setAttribute('onclick', 'clearBigPic()');
-    bigPic.setAttribute('class', 'my-pure-img');
     bigPic.setAttribute('alt', 'bigpic');
     bigPic.setAttribute('src', 'img/placeholder.png');
+    var popupComments = document.createElement('div');
+    popupComments.setAttribute('class', 'content');
+    popupComments.setAttribute('id', 'popup-comments');
     popupImg.appendChild(bigPic);
+    popupScreen.appendChild(popupHeader);
     popupScreen.appendChild(popupImg);
     popupScreen.appendChild(popupComments);
+
 
     // Форма для комментариев
     genCommentArea(popupComments);
@@ -183,7 +205,7 @@ function addCommentToPage(node, comment) {
 // comments - [] с {id, comment, time, username}
 function showComments(node, comments) {
     if (comments['error'] === 'not registered') {
-        var bigStr = '<a href="/login">Авторизируйтесь для дальнейших действий</a>';
+        var bigStr = '<div class="ui yellow message"><a href="/login">Авторизируйтесь для дальнейших действий</a></div>';
         node.innerHTML = bigStr;
         return;
     }
