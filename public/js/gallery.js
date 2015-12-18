@@ -24,6 +24,14 @@ function domReady() {
             hashChanged();
         }
     }
+
+    // Проверим, есть ли любимый котик
+    var topImg = getCookie('topImg');
+    if (topImg) {
+        if (pictures[topImg]) {
+            setFavImage(pictures[topImg]);
+        }
+    }
 }
 
 // elem - объект со свойствами
@@ -52,6 +60,42 @@ function genCommentArea(parent) {
     form += '<button type="submit" onclick="sendCommentHandler()" class="pure-button pure-u-1-3 pure-button-primary">Отправить</button>';
     form += '</div>';
     parent.innerHTML = form;
+}
+
+// Предложение сделать картинку сверху
+// Возвращает node с предложением
+// callback - что сделать по нажатию
+function genFavSuggestion(callback) {
+    var backSuggestion = document.createElement('div');
+    backSuggestion.setAttribute('class', 'ui blue message');
+    backSuggestion.setAttribute('onclick', callback);
+    backSuggestion.setAttribute('style', 'cursor: pointer;');
+    backSuggestion.innerHTML = 'Сделать котика сверху';
+    return backSuggestion;
+}
+
+// Устанавливаем картинку сверху
+// elem - объект со свойствами
+// previewPic
+// fullPic
+function setFavImage(elem) {
+    var img = document.getElementById('fav-cat-img');
+    img.setAttribute('src', elem['fullPic']);
+    var topImg = document.getElementById('fav-cat');
+    topImg.setAttribute('style', 'display: block;');
+}
+
+function unsetFavImage() {
+    deleteCookie('topImg');
+    var topImg = document.getElementById('fav-cat');
+    topImg.setAttribute('style', 'display: none;');
+}
+
+// Обработчик нажатия на кнопку установки картинки сверху
+function setFavImageHandler() {
+    var hash = parseInt(window.location.hash.substring(1), 10);
+    setFavImage(pictures[hash]);
+    setCookie('topImg', hash, {'expires': 99999});
 }
 
 // elem - объект со свойствами
@@ -92,12 +136,14 @@ function genFullPic(elem) {
     bigPic.setAttribute('onclick', 'clearBigPic()');
     bigPic.setAttribute('alt', 'bigpic');
     bigPic.setAttribute('src', 'img/placeholder.png');
+    bigPic.setAttribute('class', 'image');
     var popupComments = document.createElement('div');
     popupComments.setAttribute('class', 'content');
     popupComments.setAttribute('id', 'popup-comments');
     popupImg.appendChild(bigPic);
     popupScreen.appendChild(popupHeader);
     popupScreen.appendChild(popupImg);
+    popupScreen.appendChild(genFavSuggestion('setFavImageHandler()'));
     popupScreen.appendChild(popupComments);
 
 
@@ -205,7 +251,7 @@ function addCommentToPage(node, comment) {
 // comments - [] с {id, comment, time, username}
 function showComments(node, comments) {
     if (comments['error'] === 'not registered') {
-        var bigStr = '<div class="ui yellow message"><a href="/login">Авторизируйтесь для дальнейших действий</a></div>';
+        var bigStr = '<div class="ui warning message"><a href="/login">Авторизируйтесь для дальнейших действий</a></div>';
         node.innerHTML = bigStr;
         return;
     }
