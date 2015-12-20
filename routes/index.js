@@ -127,7 +127,11 @@ router.get('/register', function(req, res) {
 });
 
 router.post('/register', function(req, res, next) {
-    Account.register(req.body.username, req.body.password, function(err, account) {
+    var username = sanitizeHtml(req.body.username);
+    if (username === '') {
+        return res.render("register", {info: "Какой хитрец"});
+    }
+    Account.register(username, req.body.password, function(err, account) {
         if (err) {
             console.log(err);
             return res.render("register", {info: "Такое имя уже занято"});
