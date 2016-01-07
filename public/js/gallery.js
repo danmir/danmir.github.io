@@ -6,11 +6,17 @@ var isHelpOpened = false;
 var currentModuleScreen = null;
 // Список всех картинок
 var pictures = window.pictures;
+// Socket.io
+var socket;
 
 function domReady() {
     console.log("Dom ready");
     //setVH(30, "Top", "gallery-main");
     //setVH(20, "Bottom", "gallery-main");
+
+    // Подключаемся к серверу
+    socket = io.connect(window.location.host);
+    console.log('Connect socket');
 
     window.addEventListener('keyup', kp);
     window.addEventListener('hashchange', hashChanged);
@@ -50,6 +56,18 @@ function hashChanged() {
     if (pictures[hash]) {
         genFullPic(pictures[hash]);
     }
+}
+
+// Генерируем кнопку с likes
+function genLikesArea(parent, num) {
+    var likes = '<div class="ui left labeled button" tabindex="0">';
+    likes += '<a class="ui basic right pointing label" id="likes-num">';
+    likes += num;
+    likes += '</a>';
+    likes += '<div class="ui button disabled" id="like-button" onclick="addLike()">';
+    likes += '<i class="heart icon"></i> Like';
+    likes += '</div></div>';
+    parent.innerHTML = likes;
 }
 
 // Генерируем поле ввода
@@ -105,6 +123,7 @@ function genFullPic(elem) {
     var previewPic = elem['previewPic'];
     var fullPic = elem['fullPic'];
     console.log(elem);
+
     //var popupScreen = document.createElement('div');
     //popupScreen.setAttribute('class', 'popup-screen');
     //popupScreen.setAttribute('id', 'popup-screen');
@@ -124,14 +143,15 @@ function genFullPic(elem) {
     //popupScreen.appendChild(popupComments);
 
     var popupScreen = document.createElement('div');
-    popupScreen.setAttribute('class', 'ui modal visible active scrolling');
+    popupScreen.setAttribute('class', 'ui modal visible active my-scrolling');
     popupScreen.setAttribute('id', 'popup-screen');
     popupScreen.setAttribute('style', 'top: 20px; text-align: center;');
     var popupHeader = document.createElement('div');
     popupHeader.setAttribute('class', 'header');
     var popupImg = document.createElement('div');
-    popupImg.setAttribute('class', 'image content');
+    popupImg.setAttribute('class', 'content');
     popupImg.setAttribute('id', 'popup-image');
+    var likes = document.createElement('div');
     var bigPic = document.createElement('img');
     bigPic.setAttribute('onclick', 'clearBigPic()');
     bigPic.setAttribute('alt', 'bigpic');
@@ -145,13 +165,41 @@ function genFullPic(elem) {
     popupScreen.appendChild(popupHeader);
     popupScreen.appendChild(popupImg);
     popupScreen.appendChild(genFavSuggestion('setFavImageHandler()'));
+    popupScreen.appendChild(likes);
     popupScreen.appendChild(popupComments);
 
+    // Отправим номер текущей картинки на сервер
+    var hash = parseInt(window.location.hash.substring(1), 10);
+    socket.emit('current pic', {pic: hash});
+    // Likes
+    genLikesArea(likes, 0);
+    // Как только сервер разрешит (пользователь зарегистрируется) - сделаем кнопку лайков активной
+    // Спросим сервер, авторизированы ли клиент
+    socket.emit('logged in');
+    socket.on('logged in', function(data) {
+        console.log('event: logged in');
+        var is_active = document.getElementById("like-button").getAttribute('class').indexOf('active');
+        if (is_active === -1) {
+            document.getElementById("like-button").setAttribute('class', 'ui button');
+        }
+    });
+    // Получаем статус кнопки с лайком
+    socket.on('liked', function(data) {
+        console.log('event: liked');
+        document.getElementById("like-button").setAttribute('class', 'ui button active');
+    });
+    // Следим за количеством лайков
+    socket.on('likes num', function(data) {
+        console.log('event: likes num', data);
+        // Проверим, что пришел ответ для нашей картинки
+        if (data.pic === hash) {
+            document.getElementById("likes-num").innerHTML = data.count;
+        }
+    });
 
     // Форма для комментариев
     genCommentArea(popupComments);
     // Запрос на комментарии
-    var hash = parseInt(window.location.hash.substring(1), 10);
     var comments = getCommentsForPic(hash);
     // Отображение комментариев
     showComments(popupComments, comments);
@@ -184,6 +232,26 @@ function genFullPic(elem) {
     setCookie('previewPic', previewPic, {'expires': 99999});
     setCookie('fullPic', fullPic, {'expires': 99999});
     setCookie('picNum', hash, {'expires': 99999});
+}
+
+// Добавление лайка
+function addLike() {
+    var hash = window.location.hash.substring(1);
+    // Сообщим серверу
+    socket.emit('like added', {pic: hash});
+    // Подождем ответа
+    var likesNum = parseInt(document.getElementById("likes-num").innerHTML, 10);
+    socket.on('like added', function(data) {
+        if (data.status === '+1') {
+            likesNum += 1;
+            document.getElementById("like-button").setAttribute('class', 'ui button active');
+            document.getElementById("likes-num").innerHTML = likesNum.toString();
+        } else if (data.status === '-1') {
+            likesNum -= 1;
+            document.getElementById("like-button").setAttribute('class', 'ui button');
+            document.getElementById("likes-num").innerHTML = likesNum.toString();
+        }
+    });
 }
 
 // Зпрашиваем комментарии у сервера
@@ -263,7 +331,7 @@ function addCommentToPage(node, comment) {
 // comments - [] с {id, comment, time, username}
 function showComments(node, comments) {
     if (comments['error'] === 'not registered') {
-        var bigStr = '<div class="ui warning message"><a href="/login">Авторизируйтесь для дальнейших действий</a></div>';
+        var bigStr = '<div class="ui warning message"><a href="/login">Для лайков и комментариев авторизируйтесь</a></div>';
         node.innerHTML = bigStr;
         return;
     }

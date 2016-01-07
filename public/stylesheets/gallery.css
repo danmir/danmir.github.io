@@ -40,11 +40,16 @@ main > .pure-g > .pure-u-1 > .arrow-wrap
     cursor: pointer;
 }
 
-.module-screen
-{
+.module-screen {
     display: table-cell;
     vertical-align: middle;
     background-color: #ffffff;
+}
+
+.my-scrolling
+{
+    position: absolute!important;
+    margin-top: 10px!important;
 }
 
 .popup-screen
