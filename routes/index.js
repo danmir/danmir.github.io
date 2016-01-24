@@ -5,31 +5,45 @@ var passport = require('passport');
 var genStatisticPic = require('../get_statistic.js');
 var sanitizeHtml = require('sanitize-html');
 var ensureLoggedIn = require('connect-ensure-login');
+var fs = require("fs");
+var handlebars = require('handlebars');
+var layouts = require('handlebars-layouts');
+
+handlebars.registerHelper(layouts(handlebars));
+handlebars.registerPartial('layout', fs.readFileSync('./views/mainlayout.hbs', 'utf8'));
 
 // Страница с портфолио
 router.get('/', function(req, res, next) {
     genStatisticPic(req.app.locals.todayVisits, req.app.locals.AllVisits, req.app.locals.todayHits, req.app.locals.AllHits);
-    res.render('portfolio', {
-        lastVisit: req.app.locals.lastVisit
+    var template = handlebars.compile(fs.readFileSync('./views/portfolio.html', 'utf8'));
+    var output = template({
+        title: 'Портфолио',
+        lastVisit: req.app.locals.lastVisit,
+        user: req.user
     });
+    res.send(output);
 });
 
 // Галерея
 router.get('/gallery', function(req, res, next) {
     genStatisticPic(req.app.locals.todayVisits, req.app.locals.AllVisits, req.app.locals.todayHits, req.app.locals.AllHits);
-    res.render('gallery', {
+    var template = handlebars.compile(fs.readFileSync('./views/gallery.html', 'utf8'));
+    var output = template({
+        title: 'Галлерея',
+        user: req.user,
         visitsToday: req.app.locals.todayVisits,
         visitsAll: req.app.locals.AllVisits,
         hitsToday: req.app.locals.todayHits,
         hitsAll: req.app.locals.AllHits,
         lastVisit: req.app.locals.lastVisit
     });
+    res.send(output);
 });
 
 // Комментарии для картинок
 router.get('/comments/:id', function(req, res, next) {
         var Client = require('pg-native');
-        var conString = process.env.DATABASE_URL;;
+        var conString = process.env.DATABASE_URL;
         var client = new Client();
         if (req.user) {
             console.log('id: ', req.params.id);
@@ -123,18 +137,33 @@ router.get('/register', function(req, res) {
     if (!req.session.returnTo) {
         req.session.returnTo = req.get('Referer');
     }
-    res.render('register', { });
+    var template = handlebars.compile(fs.readFileSync('./views/register.html', 'utf8'));
+    var output = template({
+        title: 'Регистрация'
+    });
+    res.send(output);
 });
 
 router.post('/register', function(req, res, next) {
     var username = sanitizeHtml(req.body.username);
     if (username === '') {
-        return res.render("register", {info: "Какой хитрец"});
+        var template = handlebars.compile(fs.readFileSync('./views/register.html', 'utf8'));
+        var output = template({
+            title: 'Регистрация',
+            info: "Какой хитрец"
+        });
+        res.send(output);
+        //return res.render("register", {info: "Какой хитрец"});
     }
     Account.register(username, req.body.password, function(err, account) {
         if (err) {
             console.log(err);
-            return res.render("register", {info: "Такое имя уже занято"});
+            var template = handlebars.compile(fs.readFileSync('./views/register.html', 'utf8'));
+            var output = template({
+                title: 'Регистрация',
+                info: "Такое имя уже занято"
+            });
+            res.send(output);
         }
 
         passport.authenticate('local')(req, res, function () {
@@ -155,10 +184,15 @@ router.get('/login', function(req, res) {
         req.app.locals.isRedirected = true;
         return res.redirect('/dashboard');
     }
-    if (!req.session.returnTo) {
-        req.session.returnTo = req.get('Referer');
-    }
-    res.render('login', { user : req.user });
+
+    req.session.returnTo = req.get('Referer');
+
+    var template = handlebars.compile(fs.readFileSync('./views/login.html', 'utf8'));
+    var output = template({
+        title: 'Вход',
+        user : req.user
+    });
+    res.send(output);
 });
 
 router.post('/login', function (req, res, next) {
@@ -167,7 +201,12 @@ router.post('/login', function (req, res, next) {
             return next(err);
         }
         if (!user) {
-            return res.render('login', {errorMessage: info.message});
+            var template = handlebars.compile(fs.readFileSync('./views/login.html', 'utf8'));
+            var output = template({
+                title: 'Вход',
+                errorMessage: info.message
+            });
+            res.send(output);
         }
         req.logIn(user, function(err) {
             if (err) {

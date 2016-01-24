@@ -1,0 +1,38 @@
+{{#extend "layout"}}
+{{#content "head" mode="append"}}
+<link rel="stylesheet" href="/stylesheets/login.css">
+{{/content}}
+
+{{#content "body"}}
+<div class="ui middle aligned center aligned grid">
+    <div class="column">
+        <h2 class="ui header">Зарегистрироваться</h2>
+        {{#if info}}
+        <div class="ui negative message">
+            {{info}}
+        </div>
+        {{/if}}
+        <form class="ui large form" method="POST" action="/register">
+            <div class="ui stacked segment">
+                <div class="field">
+                    <div class="ui left icon input">
+                        <i class="user icon"></i>
+                        <input type="text" id="inputUsername" name="username" placeholder="Логин">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui left icon input">
+                        <i class="lock icon"></i>
+                        <input type="password" id="inputPassword" name="password" placeholder="Пароль">
+                    </div>
+                </div>
+                <button type="submit" class="ui fluid large teal submit button">Зарегистрироваться</button>
+            </div>
+        </form>
+    </div>
+</div>
+{{/content}}
+
+{{#content "foot" mode="prepend"}}
+{{/content}}
+{{/extend}}

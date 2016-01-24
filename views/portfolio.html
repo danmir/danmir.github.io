@@ -1,0 +1,171 @@
+{{#extend "layout"}}
+{{#content "head" mode="append"}}
+<link rel="stylesheet" href="/stylesheets/newportfolio.css">
+{{/content}}
+
+{{#content "body"}}
+<div class="ui inverted vertical masthead center aligned segment">
+    <div class="ui container">
+        <div class="ui stackable inverted menu">
+            <a data-scroll href="#whatIDo" class="item">Чем я занимаюсь</a>
+            <a data-scroll href="#about" class="item">Обо мне</a>
+            <a data-scroll href="#links" class="item">Ссылки</a>
+            <a data-scroll href="/gallery" class="item">Галлерея</a>
+            <a data-scroll href="#works" class="item">Работы</a>
+            <a data-scroll href="#contact" class="item">Связаться со мной</a>
+            {{#if user}}
+            <div class="right item">
+                <a class="ui inverted button" href="/login">Профиль</a>
+                <a class="ui inverted button" href="/logout">Выход</a>
+            </div>
+            {{else}}
+            <div class="right item">
+                <a class="ui inverted button" href="/login">Вход</a>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+    <div class="ui text container">
+        <h1 class="ui inverted header">
+            Привет, меня зовут Данил
+        </h1>
+        <h2>Я студент-разработчик</h2>
+    </div>
+</div>
+<div class="ui vertical very padded stripe segment" id="whatIDo">
+    <h2 class="ui center aligned header">Чем я занимаюсь</h2>
+    <div class="ui equal width stackable internally celled grid">
+        <div class="center aligned row">
+            <div class="column">
+                <h3>
+                    <i class="fa fa-graduation-cap"></i>
+                    Учеба
+                </h3>
+                <p>
+                    Учусь я на 3-м курсе в УрФУ на Мат-мехе (ИМКН) по специальности Компьютерная безопасность
+                </p>
+            </div>
+            <div class="column">
+                <h3>
+                    <i class="fa fa-calendar"></i>
+                    Последние спецкурсы
+                </h3>
+                <ul>
+                    <li>Cisco CCNA Routing and Switching.</li>
+                    <li>Проектирование продукта</li>
+                    <li>Курсы разработки интерфейсов Яндекса</li>
+                </ul>
+            </div>
+            <div class="column">
+                <h3>
+                    <i class="fa fa-laptop"></i>
+                    Текущая разработка
+                </h3>
+                <p>
+                    Сейчас работаем с другом над проектом <a href="http://mmlectures.ru">Лекций Мат-меха</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="ui vertical inverted segment" id="about">
+    <div class="ui grid container stackable">
+        <div class="six wide column">
+            <h2 class="ui center aligned header inverted">Обо мне</h2>
+            <p>
+                Теперь подробней: живу в Екатеринбурге, учусь в УрФУ. Люблю узнавать новое.
+                В начале учился в Гимназии 35. Затем, в СУНЦ УрГУ, затем в СУНЦ УрФУ :) на физ-мате.
+            </p>
+        </div>
+        <div class="ten wide column">
+            <h2 class="ui center aligned header inverted">Мои навыки</h2>
+            <div class="ui green inverted progress">
+                <div class="bar" style="transition-duration: 300ms; width: 42%;">
+                    <div class="progress">HTML</div>
+                </div>
+            </div>
+            <div class="ui green inverted progress">
+                <div class="bar" style="transition-duration: 300ms; width: 42%;">
+                    <div class="progress">CSS</div>
+                </div>
+            </div>
+            <div class="ui green inverted progress">
+                <div class="bar" style="transition-duration: 300ms; width: 42%;">
+                    <div class="progress">Javascript</div>
+                </div>
+            </div>
+            <div class="ui orange inverted progress">
+                <div class="bar" style="transition-duration: 300ms; width: 30%;">
+                    <div class="progress">PHP</div>
+                </div>
+            </div>
+            <div class="ui yellow inverted progress">
+                <div class="bar" style="transition-duration: 300ms; width: 20%;">
+                    <div class="progress">Wordpress</div>
+                </div>
+            </div>
+            <div class="ui olive inverted progress">
+                <div class="bar" style="transition-duration: 300ms; width: 20%;">
+                    <div class="progress">Photoshop</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="ui vertical very padded stripe segment" id="links">
+    <h2 class="ui center aligned header">Ссылки</h2>
+    <div class="ui grid">
+        <div class="doubling four column row">
+            <div class="column">
+                <a class="list-group-item" href="http://urfu.ru"><i class="fa fa-university fa-5x"></i></a>
+            </div>
+            <div class="column">
+                <a class="list-group-item" href="https://github.com/danmir/"><i class="fa fa-github fa-5x"></i></a>
+            </div>
+            <div class="column">
+                <a class="list-group-item" href="http://imkn.urfu.ru/"><i
+                        class="fa fa-graduation-cap fa-5x"></i></a>
+            </div>
+            <div class="column">
+                <a class="list-group-item" href="gallery"><i class="fa fa-picture-o fa-5x"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="ui vertical very padded stripe segment inverted" id="works">
+    <h2 class="ui center aligned header">Работы</h2>
+    <h3>Скоро</h3>
+</div>
+<div class="ui vertical very padded stripe segment" id="contact">
+    <h2 class="ui center aligned header">Связаться со мной</h2>
+    <div class="ui grid">
+        <div class="doubling four column row">
+            <div class="column">
+                <a class="list-group-item" href="mailto:danmir@me.com"><i class="fa fa-envelope-o fa-5x"></i></a>
+            </div>
+            <div class="column">
+                <a class="list-group-item" href="https://vk.com/danmir"><i class="fa fa-vk fa-5x"></i></a>
+            </div>
+            <div class="column">
+                <a class="list-group-item" href="https://twitter.com/danmir18"><i
+                        class="fa fa-twitter fa-5x"></i></a>
+            </div>
+            <div class="column">
+                <a class="list-group-item" href="https://www.facebook.com/dan.mir13"><i
+                        class="fa fa-facebook-official fa-5x"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="ui inverted vertical footer segment">
+    <div class="ui container">
+        <p>Миронов Данил. 2015-2016.</p>
+        <p>Последний hit с этого ip @ {{lastVisit}}</p>
+        <img src="img/statistic.jpg" alt="statistic">
+    </div>
+</div>
+{{/content}}
+
+{{#content "foot" mode="prepend"}}
+{{/content}}
+{{/extend}}

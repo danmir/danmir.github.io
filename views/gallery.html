@@ -1,4 +1,9 @@
-<div class="ui inverted vertical center aligned segment">
+{{#extend "layout"}}
+{{#content "head" mode="append"}}
+{{/content}}
+
+{{#content "body"}}
+<div class="ui inverted vertical masthead center aligned segment">
     <div class="ui container">
         <div class="ui stackable inverted menu">
             <a data-scroll href="/" class="item">Главная</a>
@@ -8,9 +13,16 @@
             <a data-scroll href="/gallery" class="item">Галлерея</a>
             <a data-scroll href="/#works" class="item">Работы</a>
             <a data-scroll href="/#contact" class="item">Связаться со мной</a>
+            {{#if user}}
+            <div class="right item">
+                <a class="ui inverted button" href="/login">Профиль</a>
+                <a class="ui inverted button" href="/logout">Выход</a>
+            </div>
+            {{else}}
             <div class="right item">
                 <a class="ui inverted button" href="/login">Вход</a>
             </div>
+            {{/if}}
         </div>
     </div>
 </div>
@@ -75,71 +87,6 @@
             </div>
         </div>
     </div>
-    <!--<div class="pure-g l-box-lrg" id="gallery-main">-->
-        <!--<div class="pure-u-1 pure-u-lg-1-4">-->
-            <!--<div class="l-box">-->
-                <!--<a href="#0">-->
-                    <!--<img class="pure-img" alt="pic1" src="img/cat1-preview.jpg">-->
-                <!--</a>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="pure-u-1 pure-u-lg-1-4">-->
-            <!--<div class="l-box">-->
-                <!--<a href="#1">-->
-                    <!--<img class="pure-img" alt="pic2" src="img/cat2-preview.jpg">-->
-                <!--</a>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="pure-u-1 pure-u-lg-1-4">-->
-            <!--<div class="l-box">-->
-                <!--<a href="#2">-->
-                    <!--<img class="pure-img" alt="pic3" src="img/cat3-preview.jpg">-->
-                <!--</a>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="pure-u-1 pure-u-lg-1-4">-->
-            <!--<div class="l-box">-->
-                <!--<a href="#3">-->
-                    <!--<img class="pure-img" alt="pic4" src="img/cat4-preview.jpg">-->
-                <!--</a>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="pure-u-1 pure-u-lg-1-4">-->
-            <!--<div class="l-box">-->
-                <!--<a href="#4">-->
-                    <!--<img class="pure-img" alt="pic5" src="img/cat5-preview.jpg">-->
-                <!--</a>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="pure-u-1 pure-u-lg-1-4">-->
-            <!--<div class="l-box">-->
-                <!--<a href="#5">-->
-                    <!--<img class="pure-img" alt="pic6" src="img/cat6-preview.jpg">-->
-                <!--</a>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="pure-u-1 pure-u-lg-1-4">-->
-            <!--<div class="l-box">-->
-                <!--<a href="#6">-->
-                    <!--<img class="pure-img" alt="pic7" src="img/cat7-preview.jpg">-->
-                <!--</a>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="pure-u-1 pure-u-lg-1-4">-->
-            <!--<div class="l-box">-->
-                <!--<a href="#7">-->
-                    <!--<img class="pure-img" alt="pic8" src="img/cat8-preview.jpg">-->
-                <!--</a>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="pure-u-1 pure-u-lg-1-4">-->
-            <!--<div class="l-box">-->
-                <!--<a href="#8">-->
-                    <!--<img class="pure-img" alt="pic9" src="img/cat9-preview.jpg">-->
-                <!--</a>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
     <div class="blanket" id="blanket" onclick="clearBigPic()"></div>
     <div class="info" id="info">
         <p>
@@ -151,15 +98,6 @@
         </ul>
     </div>
 </main>
-<!--<div class="ui modal active visible my-scrolling">-->
-    <!--<div class="header">Header</div>-->
-    <!--<div class="content">-->
-        <!--<img class="ui image" src="http://localhost:5000/img/cat2.jpg">-->
-        <!--<div class="description">-->
-            <!--<p>Описание</p>-->
-        <!--</div>-->
-    <!--</div>-->
-<!--</div>-->
 <!--<p><a href="https://yandex.ru/support/metrika/general/glossary.xml">Визитов</a> за сегодня {{visitsToday}}</p>-->
 <!--<p><a href="https://yandex.ru/support/metrika/general/glossary.xml">Визитов</a> в общем {{visitsAll}}</p>-->
 <!--<p><a href="https://yandex.ru/support/metrika/general/glossary.xml#pv2">Просмотров</a> за сегодня {{hitsToday}}</p>-->
@@ -171,7 +109,9 @@
         <img src="img/statistic.jpg" alt="statistic">
     </div>
 </div>
-</body>
+{{/content}}
+
+{{#content "foot" mode="prepend"}}
 <script src="js/pictures.js"></script>
 <script src="js/cookie.js"></script>
 <script src="js/utils.js"></script>
@@ -183,3 +123,5 @@
     // Из-за поддержки старых IE :(
     domReady();
 </script>
+{{/content}}
+{{/extend}}

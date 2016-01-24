@@ -3,6 +3,11 @@ body
     text-align: center;
 }
 
+.masthead .ui.menu .ui.button
+{
+    margin-left: .5em !important;
+}
+
 .arrow-wrap
 {
     margin: 10%;

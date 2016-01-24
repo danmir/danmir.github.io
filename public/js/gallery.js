@@ -73,9 +73,9 @@ function genLikesArea(parent, num) {
 // Генерируем поле ввода
 // parent - узел, к которому прицепить
 function genCommentArea(parent) {
-    var form = '<div class="pure-g comment-input">';
-    form += '<textarea class="pure-u-2-3" id="comment_field" placeholder="Комментарий"></textarea>';
-    form += '<button type="submit" onclick="sendCommentHandler()" class="pure-button pure-u-1-3 pure-button-primary">Отправить</button>';
+    var form = '<div class="ui form">';
+    form += '<div class="field"><textarea rows="2" id="comment_field" placeholder="Комментарий"></textarea></div>';
+    form += '<button type="submit" onclick="sendCommentHandler()" class="ui button">Отправить</button>';
     form += '</div>';
     parent.innerHTML = form;
 }
