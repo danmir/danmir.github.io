@@ -21,7 +21,7 @@ router.get('/', function(req, res, next) {
         lastVisit: req.app.locals.lastVisit,
         user: req.user
     });
-    res.send(output);
+    return res.send(output);
 });
 
 // Галерея
@@ -37,7 +37,7 @@ router.get('/gallery', function(req, res, next) {
         hitsAll: req.app.locals.AllHits,
         lastVisit: req.app.locals.lastVisit
     });
-    res.send(output);
+    return res.send(output);
 });
 
 // Комментарии для картинок
@@ -141,7 +141,7 @@ router.get('/register', function(req, res) {
     var output = template({
         title: 'Регистрация'
     });
-    res.send(output);
+    return res.send(output);
 });
 
 router.post('/register', function(req, res, next) {
@@ -152,8 +152,7 @@ router.post('/register', function(req, res, next) {
             title: 'Регистрация',
             info: "Какой хитрец"
         });
-        res.send(output);
-        //return res.render("register", {info: "Какой хитрец"});
+        return res.send(output);
     }
     Account.register(username, req.body.password, function(err, account) {
         if (err) {
@@ -163,7 +162,7 @@ router.post('/register', function(req, res, next) {
                 title: 'Регистрация',
                 info: "Такое имя уже занято"
             });
-            res.send(output);
+            return res.send(output);
         }
 
         passport.authenticate('local')(req, res, function () {
@@ -173,7 +172,7 @@ router.post('/register', function(req, res, next) {
                 }
                 var backURL = req.session.returnTo || '/';
                 req.app.locals.isRedirected = true;
-                res.redirect(backURL);
+                return res.redirect(backURL);
             });
         });
     });
@@ -192,7 +191,7 @@ router.get('/login', function(req, res) {
         title: 'Вход',
         user : req.user
     });
-    res.send(output);
+    return res.send(output);
 });
 
 router.post('/login', function (req, res, next) {
@@ -206,7 +205,7 @@ router.post('/login', function (req, res, next) {
                 title: 'Вход',
                 errorMessage: info.message
             });
-            res.send(output);
+            return res.send(output);
         }
         req.logIn(user, function(err) {
             if (err) {
