@@ -1,4 +1,4 @@
-window.pictures = [
+var pictures = [
     {
         name: 'pic1',
         previewPic: 'img/cat1-preview.jpg',
@@ -45,3 +45,4 @@ window.pictures = [
         fullPic: 'img/cat9.jpg'
     }
 ];
+window.pictures = pictures;
