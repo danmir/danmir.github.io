@@ -124,24 +124,6 @@ function genFullPic(elem) {
     var fullPic = elem['fullPic'];
     console.log(elem);
 
-    //var popupScreen = document.createElement('div');
-    //popupScreen.setAttribute('class', 'popup-screen');
-    //popupScreen.setAttribute('id', 'popup-screen');
-    //var popupImg = document.createElement('div');
-    //popupImg.setAttribute('class', 'popup-image');
-    //popupImg.setAttribute('id', 'popup-image');
-    //var popupComments = document.createElement('div');
-    //popupComments.setAttribute('class', 'popup-comments');
-    //popupComments.setAttribute('id', 'popup-comments');
-    //var bigPic = document.createElement('img');
-    //bigPic.setAttribute('onclick', 'clearBigPic()');
-    //bigPic.setAttribute('class', 'my-pure-img');
-    //bigPic.setAttribute('alt', 'bigpic');
-    //bigPic.setAttribute('src', 'img/placeholder.png');
-    //popupImg.appendChild(bigPic);
-    //popupScreen.appendChild(popupImg);
-    //popupScreen.appendChild(popupComments);
-
     var popupScreen = document.createElement('div');
     popupScreen.setAttribute('class', 'ui modal visible active my-scrolling');
     popupScreen.setAttribute('id', 'popup-screen');
