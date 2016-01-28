@@ -28,6 +28,7 @@
     "pg-hstore": "^2.3.2",
     "pg-native": "^1.9.0",
     "pg-query": "^0.11.0",
+    "request": "^2.69.0",
     "sanitize-html": "^1.11.2",
     "sequelize": "^3.14.2",
     "serve-favicon": "~2.3.0",

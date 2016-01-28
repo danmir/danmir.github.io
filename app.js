@@ -25,6 +25,7 @@ var counter = require('./routes/counter');
 var autoSpam = require('./routes/auto_spam');
 var hitHandler = require('./routes/hit_handler');
 var statisctic = require('./routes/statistic');
+var yastatistic = require('./routes/yastatistic');
 
 var app = express();
 var server = require('http').Server(app);
@@ -69,6 +70,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use('/', routes);
 app.use('/counter', counter);
+app.use('/yastatistic', yastatistic);
 
 // Socket.io
 io.use(passportSocketIo.authorize({

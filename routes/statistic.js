@@ -2,7 +2,7 @@ var express = require('express');
 var app = require('../app.js');
 var router = express.Router();
 var pg = require('pg');
-var conString = process.env.DATABASE_URL;;
+var conString = process.env.DATABASE_URL;
 
 // Считаем различную статистику при загрузке страницы
 router.use(function(req, res, next) {
