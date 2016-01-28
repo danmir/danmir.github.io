@@ -11,8 +11,14 @@ var socket;
 
 function domReady() {
     console.log("Dom ready");
-    //setVH(30, "Top", "gallery-main");
-    //setVH(20, "Bottom", "gallery-main");
+
+    // Для справки в IE
+    if ("onhelp" in window) {
+        window.onhelp = function () {
+            genInfo();
+            return false;
+        }
+    }
 
     // Подключаемся к серверу
     socket = io.connect(window.location.host);
