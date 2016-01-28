@@ -68,6 +68,9 @@ router.get('/', function(req, res, next) {
                                     context['path'][i]['metrics'].push({'name': mm.replace('ym:s:',''), 'value': ans['data'][i]['metrics'][m]});
                                 }
                             }
+
+                            context['title'] = 'Галлерея';
+                            context['user'] = req.user;
                             var template = handlebars.compile(fs.readFileSync('./views/statistic.html', 'utf8'));
                             var output = template(context);
                             return res.send(output);
