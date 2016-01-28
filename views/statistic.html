@@ -34,7 +34,7 @@
             Статистика по возрасту за последние 7 дней
         </h4>
         {{#each age}}
-            <div class="ui small statistics">
+            <div class="ui tiny statistics">
                 <div class="statistic">
                     <div class="value">
                         {{age}}
@@ -59,7 +59,7 @@
             Статистика по экранам за последние 7 дней
         </h4>
         {{#each resolution}}
-        <div class="ui small statistics">
+        <div class="ui tiny statistics">
             <div class="statistic">
                 <div class="value">
                     {{width}} x {{height}}
@@ -81,13 +81,38 @@
         </div>
         {{/each}}
         <h4 class="ui horizontal divider header">
-            Статистика по страницам за последние 7 дней
+            Точки входа на сайт за последние 7 дней
         </h4>
         {{#each path}}
-        <div class="ui small statistics">
+        <div class="ui tiny statistics">
             <div class="statistic">
                 <div class="value">
                     {{path}}
+                </div>
+                <div class="label">
+                    Страница
+                </div>
+            </div>
+            {{#each metrics}}
+            <div class="statistic">
+                <div class="value">
+                    {{value}}
+                </div>
+                <div class="label">
+                    {{name}}
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{/each}}
+        <h4 class="ui horizontal divider header">
+            Посещения за последние 7 дней
+        </h4>
+        {{#each pages}}
+        <div class="ui tiny statistics">
+            <div class="statistic">
+                <div class="value">
+                    {{page}}
                 </div>
                 <div class="label">
                     Страница

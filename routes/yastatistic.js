@@ -69,11 +69,30 @@ router.get('/', function(req, res, next) {
                                 }
                             }
 
-                            context['title'] = 'Галлерея';
-                            context['user'] = req.user;
-                            var template = handlebars.compile(fs.readFileSync('./views/statistic.html', 'utf8'));
-                            var output = template(context);
-                            return res.send(output);
+                            request('https://api-metrika.yandex.ru/stat/v1/data?ids=34965660&metrics=ym:pv:pageviews,ym:pv:users&dimensions=ym:pv:URLHash&oauth_token=d6916eb6de304b8191c919cf82304af2', function (error, response, body) {
+                                if (!error && response.statusCode == 200) {
+                                    ans = JSON.parse(body);
+                                    console.log(ans);
+                                    context['pages'] = [];
+                                    for (var d in ans['data']) {
+                                        var page = ans['data'][d]['dimensions'][0]['name'];
+                                        console.log(page);
+                                        context['pages'].push({'page': page, 'metrics': []});
+                                    }
+                                    for (var i in context['pages']) {
+                                        for (var m in ans['query']['metrics']) {
+                                            var mm = ans['query']['metrics'][m];
+                                            context['pages'][i]['metrics'].push({'name': mm.replace('ym:pv:',''), 'value': ans['data'][i]['metrics'][m]});
+                                        }
+                                    }
+
+                                    context['title'] = 'Галлерея';
+                                    context['user'] = req.user;
+                                    var template = handlebars.compile(fs.readFileSync('./views/statistic.html', 'utf8'));
+                                    var output = template(context);
+                                    return res.send(output);
+                                }
+                            });
                         }
                     });
                 }
