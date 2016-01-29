@@ -8,6 +8,7 @@ var ensureLoggedIn = require('connect-ensure-login');
 var fs = require("fs");
 var handlebars = require('handlebars');
 var layouts = require('handlebars-layouts');
+var query = require('pg-query');
 
 handlebars.registerHelper(layouts(handlebars));
 handlebars.registerPartial('layout', fs.readFileSync('./views/mainlayout.hbs', 'utf8'));
@@ -46,18 +47,25 @@ router.get('/comments/:id', function(req, res, next) {
         var conString = process.env.DATABASE_URL;
         var client = new Client();
         if (req.user) {
-            console.log('id: ', req.params.id);
+            //console.log('id: ', req.params.id);
             client.connect(conString, function (err) {
                 if (err) {
                     console.log(err);
                 }
                 client.query(
-                    'SELECT comment, username, time FROM comments WHERE pic_id=$1::integer',
+                    'SELECT id, comment, username, time FROM comments WHERE pic_id=$1::integer',
                     [req.params.id], function (err, rows) {
                         if (err) {
                             console.log(err);
                         }
-                        console.log(rows);
+                        //console.log(rows);
+                        for (var i in rows) {
+                            if (rows[i]['username'] === req.user.dataValues.username) {
+                                rows[i]['mine'] = '1';
+                            } else {
+                                rows[i]['mine'] = '0';
+                            }
+                        }
                         res.writeHead(200, {"Content-Type": "application/json"});
                         var json = JSON.stringify({
                             comments: rows
@@ -117,6 +125,92 @@ router.use('/comments', function(req, res, next) {
                         res.end(json);
                         client.end();
                     })
+            }
+        });
+    } else {
+        res.writeHead(200, {"Content-Type": "application/json"});
+        var json = JSON.stringify({
+            error: 'not registered'
+        });
+        res.end(json);
+        client.end();
+    }
+});
+
+// Изменение комментария на сервере
+router.use('/editcomment', function(req, res, next) {
+    var Client = require('pg-native');
+    var conString = process.env.DATABASE_URL;
+    var client = new Client();
+    if (req.user) {
+        client.connect(conString, function(err) {
+            if (err) {
+                console.log(err);
+            }
+            console.log('Изменяют комментарий', req.body);
+            //var comment = sanitizeHtml(req.body.comment);
+            var comment = sanitizeHtml(req.body.comment, {
+                allowedTags: sanitizeHtml.defaults.allowedTags.concat([ 'img' ])
+            });
+            console.log('Очищенный комментарий', comment);
+            var username = req.user.dataValues.username;
+            var commentId = parseInt(req.body.commentId, 10);
+            // Проверим размер комментария
+            if (comment.length > 1000) {
+                console.log('Слишком длинный комментарий');
+                res.writeHead(200, {"Content-Type": "application/json"});
+                var json = JSON.stringify({
+                    status: 'denied',
+                    msg: 'too long'
+                });
+                res.end(json);
+            } else {
+                // Проверяем, принадлежность комментария пользователю, который сделал запрос
+                query('SELECT id, username FROM comments WHERE id=$1::integer and username=$2::text',
+                    [commentId, username], function(err, rows) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        if (rows.length === 0) {
+                            res.writeHead(200, {"Content-Type": "application/json"});
+                            var json = JSON.stringify({
+                                status: 'denied',
+                                error: 'access level'
+                            });
+                            res.end(json);
+                        } else {
+                            // Выберем текщий комментарий с таким commentId
+                            // Скопируем его в таблицу с историей
+                            // Изменим текущий комментарий
+                            query('SELECT id, comment, time FROM comments WHERE id=$1::integer',
+                                [commentId], function(err, rows) {
+                                    if (err) {
+                                        console.log(err);
+                                    }
+                                    console.log(rows);
+                                    var oldComment = rows[0];
+                                    query('INSERT INTO comments_history (c_id, comment, time) VALUES ($1::integer, $2::text, $3)',
+                                        [commentId, oldComment['comment'], oldComment['time']], function(err, rows) {
+                                            if (err) {
+                                                console.log(err);
+                                            }
+                                            console.log(rows);
+                                            query('UPDATE comments SET comment=$1::text, time=NOW() WHERE id=$2::integer',
+                                                [comment, commentId], function(err, rows) {
+                                                    if (err) {
+                                                        console.log('update');
+                                                    }
+                                                    res.writeHead(200, {"Content-Type": "application/json"});
+                                                    var json = JSON.stringify({
+                                                        status: 'accepted',
+                                                        comment: {'commentId': commentId, 'comment': comment, 'username': username}
+                                                    });
+                                                    res.end(json);
+                                                });
+                                        });
+                                });
+                        }
+                    });
             }
         });
     } else {

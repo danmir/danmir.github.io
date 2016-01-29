@@ -8,6 +8,7 @@ var currentModuleScreen = null;
 var pictures = window.pictures;
 // Socket.io
 var socket;
+window.editInProcess = 0;
 
 function domReady() {
     console.log("Dom ready");
@@ -245,7 +246,7 @@ function addLike() {
 // Зпрашиваем комментарии у сервера
 // по id картинки
 // Возвращаем 'error' или
-// {id, comment, time, username}
+// {id, comment, time, username, mine}
 function getCommentsForPic(picNum) {
     var xhr = new XMLHttpRequest();
     var json = JSON.stringify({
@@ -294,18 +295,25 @@ function sendCommentHandler() {
     console.log('Send button clicked');
     var hash = parseInt(window.location.hash.substring(1), 10);
     var comment = document.getElementById('comment_field').value;
-    var popupList = document.querySelector('#popup-comments');
     sendCommentForPic(hash, comment);
     document.getElementById('comment_field').value = '';
 }
 
-// comment - {time, username, comment}
+// comment - {id, time, username, comment, mine}
 function createComment(comment) {
     var commentDiv = document.createElement('div');
     commentDiv.setAttribute('class', 'comment-msg');
+    commentDiv.setAttribute('data-commentId', comment['id']);
     commentDiv.innerHTML += comment.username;
     commentDiv.innerHTML += " @ (" + comment.time + ") ";
     commentDiv.innerHTML += comment['comment'];
+    if (comment['mine'] === '1') {
+        commentDiv.setAttribute('data-mine', '1');
+        commentDiv.setAttribute('onclick', 'editCommentHandler(event)');
+        commentDiv.innerHTML = '[Редактировать]  ' + commentDiv.innerHTML;
+    } else {
+        commentDiv.setAttribute('data-mine', '0');
+    }
     return commentDiv;
 }
 
@@ -328,6 +336,67 @@ function showComments(node, comments) {
     for (var i = 0; i < comments.length; ++i) {
         var comment = comments[i];
         node.appendChild(createComment(comment));
+    }
+}
+
+// commentId, comment - string
+function editComment(commentId, comment) {
+    var xhr = new XMLHttpRequest();
+    var json = JSON.stringify({
+        commentId: commentId,
+        comment: comment
+    });
+    xhr.open('POST', '/editcomment/', false);
+    //xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+    xhr.send(json);
+    var jsonResponse = JSON.parse(xhr.responseText);
+    console.log(jsonResponse);
+    return jsonResponse;
+}
+
+function editCommentHandler(event) {
+    if (window.editInProcess === 0) {
+        window.editInProcess = 1;
+        var commentDiv = event.target;
+        var commentId = commentDiv.dataset['commentid'];
+        var editDiv = document.createElement('div');
+        editDiv.setAttribute('class', 'comment-msg');
+        editDiv.setAttribute('id', 'curr-edit');
+        var editFieldDiv = document.createElement('div');
+        editFieldDiv.setAttribute('class', 'ui fluid action input');
+        editFieldDiv.innerHTML = '<input type="text" placeholder="Новый коммент" id="new-comment" data-commentid="' + commentDiv.getAttribute('data-commentid') + '">';
+        editFieldDiv.innerHTML += '<div class="ui button" onclick="updateHandler()" data-commentid="' + commentDiv.getAttribute('data-commentid') + '">Обновить</div>';
+        editDiv.appendChild(editFieldDiv);
+
+        commentDiv.removeAttribute('class');
+        //commentDiv.removeAttribute('data-commentid');
+        commentDiv.removeAttribute('onclick');
+        commentDiv.innerHTML = '';
+
+        commentDiv.setAttribute('class', editDiv.getAttribute('class'));
+        commentDiv.setAttribute('id', editDiv.getAttribute('id'));
+        commentDiv.innerHTML = editDiv.innerHTML;
+    }
+}
+
+function updateHandler() {
+    var newCommentText = document.getElementById('new-comment').value;
+    var commentId = document.getElementById('new-comment').dataset['commentid'];
+    var result = editComment(commentId, newCommentText);
+    if (result['status'] && result['status'] === 'accepted') {
+        var editDiv = document.getElementById('curr-edit');
+        editDiv.innerHTML = '';
+        editDiv.setAttribute('class', 'comment-msg');
+        editDiv.setAttribute('data-commentId', result['comment']['commentId']);
+        editDiv.setAttribute('onclick', 'editCommentHandler(event)');
+        editDiv.innerHTML += result['comment']['username'];
+        editDiv.innerHTML += " @ (" + new Date() + ") ";
+        editDiv.innerHTML += result['comment']['comment'];
+        window.editInProcess = 0;
+    } else {
+        var editDiv = document.getElementById('curr-edit');
+        editDiv.innerHTML = 'Что-то пошло не так. Перезагружайте стрицу и пробуйте еще. Спасибо. <br> Возможно нету достаточно прав';
     }
 }
 
