@@ -223,6 +223,45 @@ router.use('/editcomment', function(req, res, next) {
     }
 });
 
+router.get('/dashboard', function(req, res) {
+    if (!req.user) {
+        req.app.locals.isRedirected = true;
+        return res.redirect('/login');
+    }
+    return res.send('Comming soon');
+    //var username = req.user.dataValues.username;
+    //var commentsHistory = [];
+    //query('SELECT id, username, comment FROM comments WHERE username=$1::text',
+    //    [username], function(err, rows) {
+    //        if (err) {
+    //            console.log(err);
+    //        }
+    //        var currentCommentList = rows;
+    //        console.log(currentCommentList);
+    //        for (var i in currentCommentList) {
+    //            query('SELECT comment, time FROM comments_history WHERE c_id=$1::integer',
+    //                [currentCommentList[i]['id']], function(err, rows) {
+    //                    if (err) {
+    //                        console.log(err);
+    //                    }
+    //                    var historyCommentList = rows;
+    //                    console.log(historyCommentList);
+    //                    if
+    //                });
+    //        }
+    //    });
+    //function readyToAnswer() {
+    //    var template = handlebars.compile(fs.readFileSync('./views/dashboard.html', 'utf8'));
+    //    var output = template({
+    //        title: 'История комментариев',
+    //        user: req.user,
+    //        //current: currentCommentList,
+    //        //history: historyCo
+    //    });
+    //    return res.send(output);
+    //}
+});
+
 router.get('/register', function(req, res) {
     if (req.user) {
         req.app.locals.isRedirected = true;

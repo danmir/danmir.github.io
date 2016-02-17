@@ -1,0 +1,143 @@
+{{#extend "layout"}}
+
+{{#content "head" mode="append"}}
+{{/content}}
+
+{{#content "body"}}
+<div class="ui inverted vertical masthead center aligned segment">
+    <div class="ui container">
+        <div class="ui stackable inverted menu">
+            <a data-scroll href="/" class="item">Главная</a>
+            <a data-scroll href="/#whatIDo" class="item">Чем я занимаюсь</a>
+            <a data-scroll href="/#about" class="item">Обо мне</a>
+            <a data-scroll href="/#links" class="item">Ссылки</a>
+            <a data-scroll href="/gallery" class="item">Галлерея</a>
+            <a data-scroll href="/#works" class="item">Работы</a>
+            <a data-scroll href="/#contact" class="item">Связаться со мной</a>
+            <a data-scroll href="/yastatistic" class="item">Статистика</a>
+            {{#if user}}
+            <div class="right item">
+                <a class="ui inverted button" href="/login">Профиль</a>
+                <a class="ui inverted button" href="/logout">Выход</a>
+            </div>
+            {{else}}
+            <div class="right item">
+                <a class="ui inverted button" href="/login">Вход</a>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</div>
+<div class="ui center aligned container">
+    <div class="ui raised center aligned segment">
+        <h4 class="ui horizontal divider header">
+            Статистика по возрасту за последние 7 дней
+        </h4>
+        {{#each age}}
+        <div class="ui tiny statistics">
+            <div class="statistic">
+                <div class="value">
+                    {{age}}
+                </div>
+                <div class="label">
+                    Возраст
+                </div>
+            </div>
+            {{#each metrics}}
+            <div class="statistic">
+                <div class="value">
+                    {{value}}
+                </div>
+                <div class="label">
+                    {{name}}
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{/each}}
+        <h4 class="ui horizontal divider header">
+            Статистика по экранам за последние 7 дней
+        </h4>
+        {{#each resolution}}
+        <div class="ui tiny statistics">
+            <div class="statistic">
+                <div class="value">
+                    {{width}} x {{height}}
+                </div>
+                <div class="label">
+                    Разрешение
+                </div>
+            </div>
+            {{#each metrics}}
+            <div class="statistic">
+                <div class="value">
+                    {{value}}
+                </div>
+                <div class="label">
+                    {{name}}
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{/each}}
+        <h4 class="ui horizontal divider header">
+            Точки входа на сайт за последние 7 дней
+        </h4>
+        {{#each path}}
+        <div class="ui tiny statistics">
+            <div class="statistic">
+                <div class="value">
+                    {{path}}
+                </div>
+                <div class="label">
+                    Страница
+                </div>
+            </div>
+            {{#each metrics}}
+            <div class="statistic">
+                <div class="value">
+                    {{value}}
+                </div>
+                <div class="label">
+                    {{name}}
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{/each}}
+        <h4 class="ui horizontal divider header">
+            Посещения за последние 7 дней
+        </h4>
+        {{#each pages}}
+        <div class="ui tiny statistics">
+            <div class="statistic">
+                <div class="value">
+                    {{page}}
+                </div>
+                <div class="label">
+                    Страница
+                </div>
+            </div>
+            {{#each metrics}}
+            <div class="statistic">
+                <div class="value">
+                    {{value}}
+                </div>
+                <div class="label">
+                    {{name}}
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{/each}}
+        <h5 class="ui horizontal divider header">
+            P.S Статистика из Яндекс метрики
+        </h5>
+    </div>
+</div>
+{{/content}}
+
+{{#content "foot" mode="prepend"}}
+{{/content}}
+
+{{/extend}}
